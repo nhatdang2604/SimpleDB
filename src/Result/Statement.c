@@ -1,5 +1,4 @@
-#include "Statement.h";
-#include "stdio.h";
+#include "Statement.h"
 
 void executeStatement(Statement* pStatement) {
     switch(pStatement->type) {

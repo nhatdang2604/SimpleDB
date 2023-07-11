@@ -1,7 +1,9 @@
+#ifndef __INPUT_BUFFER__
+#define __INPUT_BUFFER__
+
 #include <sys/types.h>
 #include <stdlib.h>
 #include <stdio.h>
-
 
 typedef struct {
     char* aBuffer;
@@ -13,3 +15,6 @@ InputBuffer* newInputBuffer();
 void printPrompt();
 void readInput(InputBuffer* pInputBuffer);
 void closeInputBuffer(InputBuffer* pInputBuffer);
+
+#endif 
+

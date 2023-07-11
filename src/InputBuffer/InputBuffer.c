@@ -1,4 +1,4 @@
-#include "InputBuffer.h";
+#include "InputBuffer.h"
 
 InputBuffer* newInputBuffer() {
     InputBuffer* pInputBuffer = malloc(sizeof(InputBuffer));

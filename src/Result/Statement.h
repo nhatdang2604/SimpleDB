@@ -1,3 +1,8 @@
+#ifndef __STATEMENT__
+#define __STATEMENT__
+
+#include "stdio.h"
+
 typedef enum {
     STATEMENT_INSERT,
     STATEMENT_SELECT,
@@ -8,3 +13,5 @@ typedef struct {
 } Statement;
 
 void executeStatement(Statement* pStatement);
+
+#endif

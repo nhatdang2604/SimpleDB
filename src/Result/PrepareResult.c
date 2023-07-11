@@ -1,8 +1,5 @@
-#include "PrepareResult.h";
-#include "../InputBuffer/InputBuffer.h";
-#include "Statement.h";
-#include "MetaCommandResult.h"
-#include "string.h";
+#include "PrepareResult.h"
+#include "string.h"
 
 PrepareResult prepareStatement(InputBuffer* pInputBuffer, Statement* pStatement) {
     if (0 == strcmp(pInputBuffer->aBuffer, "insert")) {

@@ -1,9 +1,9 @@
 #include <stdbool.h>
 #include <string.h>
-#include "Result/MetaCommandResult.h";
+#include "Result/MetaCommandResult.h"
 #include "Result/Statement.h"
 #include "Result/PrepareResult.h"
-#include "InputBuffer/InputBuffer.h";
+#include "InputBuffer/InputBuffer.h"
 
 int main(int argc, char* argv[]){
     InputBuffer* pInputBuffer = newInputBuffer();
@@ -24,17 +24,18 @@ int main(int argc, char* argv[]){
         }
 
         Statement statement;
-        switch(prepareStatement(pInputBuffer, &statement) {
+        switch(prepareStatement(pInputBuffer, &statement)) {
             case (PREPARE_SUCCESS): {
                 break;
             }
 
             case (PREPARE_UNREGCONIZED_STATEMENT): {
                 printf("Unreconized keyword at start of '%s'\n", pInputBuffer->aBuffer);
+                continue;
             }
-        })
+        }
 
         executeStatement(&statement);
-        printf("Executed");
+        printf("Executed\n");
     }
 }
