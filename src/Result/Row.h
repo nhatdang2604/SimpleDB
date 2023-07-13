@@ -8,14 +8,14 @@
 
 typedef struct {
     uint32_t id,
-    char username[COLUMN_USERNAME_SIZE],
-    char email[COLUMN_EMAIL_SIZE],
+    char strUsername[COLUMN_USERNAME_SIZE],
+    char strEmail[COLUMN_EMAIL_SIZE],
 } Row;
 
 #define SIZE_OF_ATTRIBUTE(Struct, Attribute) sizeof(((Struct*)0)->Attribute)
 const uint32_t ID_SIZE = SIZE_OF_ATTRIBUTE(Row, id);
-const uint32_t USERNAME_SIZE = SIZE_OF_ATTRIBUTE(Row, username);
-const uint32_t EMAIL_SIZE = SIZE_OF_ATTRIBUTE(Row, email);
+const uint32_t USERNAME_SIZE = SIZE_OF_ATTRIBUTE(Row, strUsername);
+const uint32_t EMAIL_SIZE = SIZE_OF_ATTRIBUTE(Row, strEmail);
 const uint32_t ID_OFFSET = 0;
 const uint32_t USERNAME_OFFSET = ID_OFFSET + ID_SIZE;
 const uint32_t EMAIL_OFFSET = USERNAME_OFFSET + USERNAME_SIZE;
