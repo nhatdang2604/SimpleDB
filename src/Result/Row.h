@@ -7,9 +7,9 @@
 #define COLUMN_EMAIL_SIZE 255
 
 typedef struct {
-    uint32_t id,
-    char strUsername[COLUMN_USERNAME_SIZE],
-    char strEmail[COLUMN_EMAIL_SIZE],
+    uint32_t id;
+    char strUsername[COLUMN_USERNAME_SIZE];
+    char strEmail[COLUMN_EMAIL_SIZE];
 } Row;
 
 #define SIZE_OF_ATTRIBUTE(Struct, Attribute) sizeof(((Struct*)0)->Attribute)
@@ -23,5 +23,6 @@ const uint32_t ROW_SIZE = ID_SIZE + USERNAME_SIZE + EMAIL_SIZE;
 
 void serializeRow(Row* pSource, void* pDestination);
 void deserializeRow(void* pSource, Row* pDestination);
+void printRow(Row* row);
 
 #endif

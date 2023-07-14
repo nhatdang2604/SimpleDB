@@ -1,5 +1,6 @@
 #include "Row.h"
 #include "string.h"
+#include <stdio.h>
 
 void serializeRow(Row* pSource, void* pDestination) {
     memcpy(pDestination + ID_OFFSET, &(pSource->id), ID_SIZE);
@@ -12,3 +13,7 @@ void deserializeRow(void* pSource, Row* pDestination) {
     memcpy(&(pDestination->strUsername), pSource + USERNAME_OFFSET +, USERNAME_SIZE);
     memcpy(&(pDestination>strEmail), pSource + EMAIL_OFFSET, EMAIL_SIZE);
 };
+
+void printRow(Row* row) {
+    printf("(%d, %s, %s)\n", row->id, row->strUsername, row->strEmail);
+}
