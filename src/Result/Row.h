@@ -5,6 +5,11 @@
 
 #define COLUMN_USERNAME_SIZE 255
 #define COLUMN_EMAIL_SIZE 255
+#define ID_OFFSET_VALUE 0
+#define USERNAME_OFFSET_VALUE (ID_OFFSET_VALUE + SIZE_OF_ATTRIBUTE(Row, id))
+#define EMAIL_OFFSET_VALUE (USERNAME_OFFSET_VALUE + SIZE_OF_ATTRIBUTE(Row, strEmail))
+#define ROW_SIZE_VALUE (SIZE_OF_ATTRIBUTE(Row, id) + SIZE_OF_ATTRIBUTE(Row, strUsername) + SIZE_OF_ATTRIBUTE(Row, strEmail))
+
 
 typedef struct {
     uint32_t id;
@@ -13,13 +18,14 @@ typedef struct {
 } Row;
 
 #define SIZE_OF_ATTRIBUTE(Struct, Attribute) sizeof(((Struct*)0)->Attribute)
-const uint32_t ID_SIZE = SIZE_OF_ATTRIBUTE(Row, id);
-const uint32_t USERNAME_SIZE = SIZE_OF_ATTRIBUTE(Row, strUsername);
-const uint32_t EMAIL_SIZE = SIZE_OF_ATTRIBUTE(Row, strEmail);
-const uint32_t ID_OFFSET = 0;
-const uint32_t USERNAME_OFFSET = ID_OFFSET + ID_SIZE;
-const uint32_t EMAIL_OFFSET = USERNAME_OFFSET + USERNAME_SIZE;
-const uint32_t ROW_SIZE = ID_SIZE + USERNAME_SIZE + EMAIL_SIZE;
+
+extern const uint32_t ID_SIZE;
+extern const uint32_t USERNAME_SIZE;
+extern const uint32_t EMAIL_SIZE;
+extern const uint32_t ID_OFFSET;
+extern const uint32_t USERNAME_OFFSET;
+extern const uint32_t EMAIL_OFFSET;
+extern const uint32_t ROW_SIZE;
 
 void serializeRow(Row* pSource, void* pDestination);
 void deserializeRow(void* pSource, Row* pDestination);

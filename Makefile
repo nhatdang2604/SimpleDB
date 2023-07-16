@@ -4,20 +4,29 @@ OBJDIR=./build
 clean: simpleDB
 	rm -rf ./*.o
 
-simpleDB: main.o PrepareResult.o MetaCommandResult.o Statement.o InputBuffer.o
-	$(CC) -o ${OBJDIR}/simpleDB main.o PrepareResult.o MetaCommandResult.o Statement.o InputBuffer.o
+simpleDB: main.o InputBuffer.o PrepareResult.o MetaCommandResult.o Statement.o ExecuteResult.o Row.o Table.o
+	$(CC) -o ${OBJDIR}/simpleDB main.o InputBuffer.o PrepareResult.o MetaCommandResult.o Statement.o ExecuteResult.o Row.o Table.o
 
-main.o: src/main.c src/InputBuffer/InputBuffer.h src/Result/Statement.h src/Result/MetaCommandResult.h src/Result/PrepareResult.h
+main.o: src/main.c MetaCommandResult.o Statement.o PrepareResult.o Table.o ExecuteResult.o
 	$(CC) -c src/main.c
-
-PrepareResult.o: src/Result/PrepareResult.c src/InputBuffer/InputBuffer.h src/Result/Statement.h
-	$(CC) -c src/Result/PrepareResult.c
-
-MetaCommandResult.o: src/Result/MetaCommandResult.c src/InputBuffer/InputBuffer.h
-	$(CC) -c src/Result/MetaCommandResult.c
-
-Statement.o: src/Result/Statement.c 
-	$(CC) -c src/Result/Statement.c
 
 InputBuffer.o: src/InputBuffer/InputBuffer.c
 	$(CC) -c src/InputBuffer/InputBuffer.c
+
+PrepareResult.o: src/Result/PrepareResult.c InputBuffer.o Statement.o
+	$(CC) -c src/Result/PrepareResult.c
+
+MetaCommandResult.o: src/Result/MetaCommandResult.c InputBuffer.o
+	$(CC) -c src/Result/MetaCommandResult.c
+
+Statement.o: src/Result/Statement.c ExecuteResult.o Table.o Row.o
+	$(CC) -c src/Result/Statement.c
+
+ExecuteResult.o: src/Result/ExecuteResult.c
+	$(CC) -c src/Result/ExecuteResult.c
+
+Row.o: src/Result/Row.c
+	$(CC) -c src/Result/Row.c
+
+Table.o: src/Result/Table.c Row.o
+	$(CC) -c src/Result/Table.c

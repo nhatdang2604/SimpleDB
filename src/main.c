@@ -3,9 +3,14 @@
 #include "Result/MetaCommandResult.h"
 #include "Result/Statement.h"
 #include "Result/PrepareResult.h"
+#include "Result/Table.h"
+#include "Result/ExecuteResult.h"
+
 #include "InputBuffer/InputBuffer.h"
 
+
 int main(int argc, char* argv[]){
+    Table* pTable = newTable();
     InputBuffer* pInputBuffer = newInputBuffer();
     while(true) {
         printPrompt();
@@ -29,13 +34,27 @@ int main(int argc, char* argv[]){
                 break;
             }
 
+            case (PREPARE_SYNTAX_ERROR): {
+                printf("Syntax error, Could not parse statement.\n");
+                continue;
+            }
+
             case (PREPARE_UNREGCONIZED_STATEMENT): {
-                printf("Unreconized keyword at start of '%s'\n", pInputBuffer->aBuffer);
+                printf("Unregconized keyword at start of '%s'\n", pInputBuffer->aBuffer);
                 continue;
             }
         }
 
-        executeStatement(&statement);
-        printf("Executed\n");
+        switch (executeStatement(&statement, pTable)) {
+            case (EXECUTE_SUCCESS): {
+                printf("Executed.\n");
+                break;
+            }
+
+            case (EXECUTE_TABLE_FULL): {
+                printf("Error: Table full.\n");
+                break;
+            }
+        }
     }
 }

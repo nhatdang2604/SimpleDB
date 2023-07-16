@@ -3,6 +3,8 @@
 
 #include "stdio.h"
 #include "Row.h"
+#include "Table.h"
+#include "ExecuteResult.h"
 
 typedef enum {
     STATEMENT_INSERT,
@@ -14,6 +16,8 @@ typedef struct {
     Row rowToInsert;
 } Statement;
 
-void executeStatement(Statement* pStatement);
+ExecuteResult executeInsert(Statement* pStatement, Table* pTable);
+ExecuteResult executeSelect(Statement* pStatement, Table* pTable);
+ExecuteResult executeStatement(Statement* pStatement, Table* pTable);
 
 #endif

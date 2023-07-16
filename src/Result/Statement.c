@@ -1,7 +1,4 @@
 #include "Statement.h"
-#include "Table.h"
-#include "Row.h"
-#include "ExecuteResult.h"
 
 ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
     if (pTable->nNumRows >= TABLE_MAX_ROWS) {
@@ -9,7 +6,8 @@ ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
     }
 
     Row* pRowToInsert = &(pStatement->rowToInsert);
-    serializeRow(pRowToInsert, rowSlot(pTable, pTable->nNumRows);)
+    serializeRow(pRowToInsert, rowSlot(pTable, pTable->nNumRows));
+    ++pTable->nNumRows;
 
     return EXECUTE_SUCCESS;
 }
