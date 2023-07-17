@@ -43,6 +43,10 @@ int main(int argc, char* argv[]){
                 printf("Unregconized keyword at start of '%s'\n", pInputBuffer->aBuffer);
                 continue;
             }
+
+            case (PREPARE_STRING_TOO_LONG): {
+                printf("Syntax error. Could not parse statement");
+            }
         }
 
         switch (executeStatement(&statement, pTable)) {

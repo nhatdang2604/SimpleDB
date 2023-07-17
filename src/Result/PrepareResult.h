@@ -8,6 +8,7 @@ typedef enum {
     PREPARE_SUCCESS,
     PREPARE_SYNTAX_ERROR,
     PREPARE_UNREGCONIZED_STATEMENT,
+    PREPARE_STRING_TOO_LONG
 } PrepareResult;
 
 PrepareResult prepareStatement(InputBuffer* pInputBuffer, Statement* pStatement);

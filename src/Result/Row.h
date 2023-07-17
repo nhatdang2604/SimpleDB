@@ -13,8 +13,8 @@
 
 typedef struct {
     uint32_t id;
-    char strUsername[COLUMN_USERNAME_SIZE];
-    char strEmail[COLUMN_EMAIL_SIZE];
+    char strUsername[COLUMN_USERNAME_SIZE + 1];
+    char strEmail[COLUMN_EMAIL_SIZE + 1];
 } Row;
 
 #define SIZE_OF_ATTRIBUTE(Struct, Attribute) sizeof(((Struct*)0)->Attribute)
