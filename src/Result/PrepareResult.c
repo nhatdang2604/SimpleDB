@@ -1,6 +1,5 @@
 #include "PrepareResult.h"
 #include "string.h"
-#include "cstring"
 
 PrepareResult prepareInsert(InputBuffer* pInputBuffer, Statement* pStatement) {
     pStatement->type = STATEMENT_INSERT;
@@ -14,6 +13,11 @@ PrepareResult prepareInsert(InputBuffer* pInputBuffer, Statement* pStatement) {
     }
 
     int id = atoi(strId);
+
+    if (id < 0) {
+        return PREPARE_NEGATIVE_ID;
+    }
+
     if (strlen(strUsername) > COLUMN_USERNAME_SIZE) {
         return PREPARE_STRING_TOO_LONG;
     }
@@ -23,15 +27,17 @@ PrepareResult prepareInsert(InputBuffer* pInputBuffer, Statement* pStatement) {
     }
     
     pStatement->rowToInsert.id = id;
-    pStatement->rowToInsert.strUsername = strUsername;
-    pStatement->rowToInsert.strEmail = strEmail;
-
+    // pStatement->rowToInsert.strUsername = strUsername;
+    // pStatement->rowToInsert.strEmail = strEmail;
+    strcpy(pStatement->rowToInsert.strUsername, strUsername);
+    strcpy(pStatement->rowToInsert.strEmail, strEmail);  
+     
     return PREPARE_SUCCESS;
 }
 
 PrepareResult prepareStatement(InputBuffer* pInputBuffer, Statement* pStatement) {
     if (0 == strncmp(pInputBuffer->aBuffer, "insert", 6)) {
-        return prepareInsert(pInputBuffer, pStatement)
+        return prepareInsert(pInputBuffer, pStatement);
     }
 
     if (0 == strcmp(pInputBuffer->aBuffer, "select")) {

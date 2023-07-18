@@ -45,7 +45,13 @@ int main(int argc, char* argv[]){
             }
 
             case (PREPARE_STRING_TOO_LONG): {
-                printf("Syntax error. Could not parse statement");
+                printf("String is too long\n");
+                continue;
+            }
+
+            case (PREPARE_NEGATIVE_ID): {
+                printf("ID must be positive.\n");
+                continue;
             }
         }
 
