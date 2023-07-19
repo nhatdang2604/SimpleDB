@@ -1,8 +1,9 @@
 #include "MetaCommandResult.h"
 #include "string.h"
 
-MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer) {
+MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer, Table* pTable) {
     if (0 == strcmp(pInputBuffer->aBuffer, ".exit")) {
+        dbClose(pTable);
         closeInputBuffer(pInputBuffer);
         exit(EXIT_SUCCESS);
     } else {

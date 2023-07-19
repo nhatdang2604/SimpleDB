@@ -10,14 +10,21 @@
 
 
 int main(int argc, char* argv[]){
-    Table* pTable = newTable();
+    if (argc < 2) {
+        printf("Must supply a database filename.\n");
+        exit(EXIT_FAILURE);
+    }
+
+    char* filename = argv[1];
+    Table* pTable = dbOpen(filename);
+
     InputBuffer* pInputBuffer = newInputBuffer();
     while(true) {
         printPrompt();
         readInput(pInputBuffer);
 
         if ('.' == pInputBuffer->aBuffer[0]) {
-            switch(doMetaCommand(pInputBuffer)) {
+            switch(doMetaCommand(pInputBuffer, pTable)) {
                 case (META_COMMAND_SUCCESS): {
                     continue;
                 }

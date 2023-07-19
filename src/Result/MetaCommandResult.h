@@ -3,13 +3,14 @@
 
 
 #include "../InputBuffer/InputBuffer.h"
+#include "Table.h"
 
 typedef enum {
     META_COMMAND_SUCCESS,
     META_COMMAND_UNREGCONIZED_COMMAND,
 } MetaCommandResult;
 
-MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer);
+MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer, Table* pTable);
 
 #endif
 
