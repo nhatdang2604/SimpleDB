@@ -1,4 +1,6 @@
 #include "Statement.h"
+#include "Cursor.h"
+#include <stdlib.h>
 
 ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
     if (pTable->nNumRows >= TABLE_MAX_ROWS) {
@@ -6,19 +8,24 @@ ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
     }
 
     Row* pRowToInsert = &(pStatement->rowToInsert);
-    serializeRow(pRowToInsert, rowSlot(pTable, pTable->nNumRows));
+    Cursor* pCursor = tableEnd(pTable);
+    serializeRow(pRowToInsert, cursorValue(pCursor));
     ++pTable->nNumRows;
+
+    free(pCursor);
 
     return EXECUTE_SUCCESS;
 }
 
 ExecuteResult executeSelect(Statement* pStatement, Table* pTable) {
+    Cursor* pCursor = tableStart(pTable);
     Row row;
-    for (uint32_t i = 0; i < pTable->nNumRows; ++i) {
-        deserializeRow(rowSlot(pTable, i), &row);
+    while (!(pCursor->bEndOfTable)) {
+        deserializeRow(cursorValue(pCursor), &row);
         printRow(&row);
+        cursorAdvance(pCursor);
     }
-
+    free(pCursor);
     return EXECUTE_SUCCESS;
 }
 

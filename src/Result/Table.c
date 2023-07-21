@@ -1,19 +1,12 @@
 #include "Table.h"
 #include "Row.h"
 #include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
 
 const uint32_t PAGE_SIZE = PAGE_SIZE_VALUE;
 const uint32_t ROWS_PER_PAGE = ROWS_PER_PAGE_VALUE;
 const uint32_t TABLE_MAX_ROWS = ROWS_PER_PAGE_VALUE  * TABLE_MAX_PAGES;
-
-void* rowSlot(Table* pTable, uint32_t nRowNum) {
-    uint32_t nPageNum = nRowNum / ROWS_PER_PAGE;
-    void* pPage = getPage(pTable->pPager, nPageNum);
-    uint32_t nRowOffset = nRowNum % ROWS_PER_PAGE;
-    uint32_t nByteOffset = nRowOffset * ROW_SIZE;
-
-    return pPage + nByteOffset;
-}
 
 Table* dbOpen(const char* strFilename) {
     Pager* pPager = pagerOpen(strFilename);

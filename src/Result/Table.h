@@ -16,8 +16,6 @@ typedef struct {
     Pager* pPager;
 } Table;
 
-void* rowSlot(Table* pTable, uint32_t nRowNum);
 Table* dbOpen(const char* strFilename);
 void dbClose(Table* pTable);
-// void freeTable(Table* pTable);
 #endif
