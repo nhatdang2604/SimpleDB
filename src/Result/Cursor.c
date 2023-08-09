@@ -1,12 +1,17 @@
 #include "Cursor.h"
 #include "Row.h"
+#include "Tree/Node.h"
 #include <stdlib.h>
 
 Cursor* tableStart(Table* pTable) {
     Cursor* pCursor = malloc(sizeof(Cursor));
     pCursor->pTable = pTable;
-    pCursor->nRowNum = 0;
-    pCursor->bEndOfTable = (0 == pTable->nNumRows);
+    pCursor->nPageNum = pTable->nRootPageNum;
+    pCursor->nCellNum = 0;
+
+    void* pRootNode = getPage(pTable->pPager, pTable->nRootPageNum);
+    uint32_t nNumCells = *leafNodeNumCell(pRootNode);
+    pCursor->bEndOfTable = (0 == nNumCells);
 
     return pCursor;
 }
@@ -14,25 +19,29 @@ Cursor* tableStart(Table* pTable) {
 Cursor* tableEnd(Table* pTable) {
     Cursor* pCursor = malloc(sizeof(Cursor));
     pCursor->pTable = pTable;
-    pCursor->nRowNum = pTable->nNumRows;
+    
+    pCursor->nPageNum = pTable->nRootPageNum;
+    void* pRootNode = getPage(pTable->pPager, pTable->nRootPageNum);
+    uint32_t nNumCells = *leafNodeNumCell(pRootNode);
+    pCursor->nCellNum = nNumCells;
+
     pCursor->bEndOfTable = true;
 
     return pCursor;
 }
 
 void cursorAdvance(Cursor* pCursor) {
-    ++pCursor->nRowNum;
-    Table* pTable = pCursor->pTable;
-    if (pCursor->nRowNum == pTable->nNumRows) {
+    uint32_t nPageNum = pCursor->nPageNum;
+    void* pNode = getPage(pCursor->pTable->pPager, nPageNum);
+
+    ++pCursor->nCellNum;
+    if (pCursor->nCellNum >= (*leafNodeNumCell(pNode))) {
         pCursor->bEndOfTable = true;
     }
 }
 
 void* cursorValue(Cursor* pCursor) {
-    uint32_t nRowNum = pCursor->nRowNum;
-    uint32_t nPageNum = nRowNum / ROWS_PER_PAGE;
+    uint32_t nPageNum = pCursor->nPageNum;
     void* pPage = getPage(pCursor->pTable->pPager, nPageNum);
-    uint32_t nRowOffset = nRowNum % ROWS_PER_PAGE;
-    uint32_t nByteOffset = nRowOffset * ROW_SIZE;
-    return pPage + nByteOffset;
+    return leafNodeValue(pPage, pCursor->nCellNum);
 }

@@ -11,6 +11,9 @@ typedef enum {
 } MetaCommandResult;
 
 MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer, Table* pTable);
+void printConstants();
+void printLeafNode(void* pNode);
+
 
 #endif
 

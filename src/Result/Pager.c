@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
-#include "Table.h"
+
+const uint32_t PAGE_SIZE = PAGE_SIZE_VALUE;
 
 Pager* pagerOpen(const char* strFilename) {
     int nFileDescriptor = open(
@@ -24,6 +25,12 @@ Pager* pagerOpen(const char* strFilename) {
     Pager* pPager = malloc(sizeof(Pager));
     pPager->nFileDescriptor = nFileDescriptor;
     pPager->nFileLength = nFileLength;
+    pPager->nNumPages = nFileLength / PAGE_SIZE;
+
+    if (0 != (nFileLength % PAGE_SIZE)) {
+        printf("DB file is not a whole number of pages. Corrupt file.\n");
+        exit(EXIT_FAILURE);
+    }
 
     for (uint32_t i = 0; i < TABLE_MAX_PAGES; ++i) {
         pPager->aPages[i] = NULL;
@@ -59,12 +66,16 @@ void* getPage(Pager* pPager, uint32_t nPageNum) {
         }
 
         pPager->aPages[nPageNum] = pPage;
+
+        if (nPageNum >= pPager->nNumPages) {
+            ++pPager->nNumPages;
+        }
     }
 
     return pPager->aPages[nPageNum];
 }
 
-void pagerFlush(Pager* pPager, uint32_t nPageNum, uint32_t size) {
+void pagerFlush(Pager* pPager, uint32_t nPageNum) {
     if (NULL == pPager->aPages[nPageNum]) {
         printf("Tried to flush null page\n");
         exit(EXIT_FAILURE);
@@ -77,7 +88,7 @@ void pagerFlush(Pager* pPager, uint32_t nPageNum, uint32_t size) {
         exit(EXIT_FAILURE);
     }
 
-    ssize_t nBytesWritten = write(pPager->nFileDescriptor, pPager->aPages[nPageNum], size);
+    ssize_t nBytesWritten = write(pPager->nFileDescriptor, pPager->aPages[nPageNum], PAGE_SIZE);
 
     if (-1 == nBytesWritten) {
         printf("Error on writing: %d\n", errno);

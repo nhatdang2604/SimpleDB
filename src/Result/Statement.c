@@ -1,16 +1,17 @@
 #include "Statement.h"
 #include "Cursor.h"
+#include "Tree/Node.h"
 #include <stdlib.h>
 
 ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
-    if (pTable->nNumRows >= TABLE_MAX_ROWS) {
+    void* pNode = getPage(pTable->pPager, pTable->nRootPageNum);
+    if ((*leafNodeNumCell(pNode)) >= LEAF_NODE_MAX_CELLS ) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row* pRowToInsert = &(pStatement->rowToInsert);
     Cursor* pCursor = tableEnd(pTable);
-    serializeRow(pRowToInsert, cursorValue(pCursor));
-    ++pTable->nNumRows;
+    leafNodeInsert(pCursor, pRowToInsert->id, pRowToInsert);
 
     free(pCursor);
 
