@@ -35,12 +35,14 @@ extern const uint32_t LEAF_NODE_VALUE_OFFSET;
 extern const uint32_t LEAF_NODE_CELL_SIZE;
 extern const uint32_t LEAF_NODE_SPACE_FOR_CELLS;
 extern const uint32_t LEAF_NODE_MAX_CELLS;
-
+ 
 uint32_t* leafNodeNumCell(void* pNode);
 void* leafNodeCell(void* pNode, uint32_t nCellNum);
 uint32_t* leafNodeKey(void* pNode, uint32_t nCellNum);
 void* leafNodeValue(void* pNode, uint32_t nCellNum);
 void initializeLeafNode(void* pNode);
 void leafNodeInsert(Cursor* pCursor, uint32_t key, Row* pValue);
+NodeType getNodeType(void* pNode);
+void setNodeType(void* pNode, NodeType type);
 
 #endif

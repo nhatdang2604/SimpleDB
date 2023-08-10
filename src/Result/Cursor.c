@@ -2,6 +2,7 @@
 #include "Row.h"
 #include "Tree/Node.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 Cursor* tableStart(Table* pTable) {
     Cursor* pCursor = malloc(sizeof(Cursor));
@@ -16,18 +17,18 @@ Cursor* tableStart(Table* pTable) {
     return pCursor;
 }
 
-Cursor* tableEnd(Table* pTable) {
-    Cursor* pCursor = malloc(sizeof(Cursor));
-    pCursor->pTable = pTable;
-    
-    pCursor->nPageNum = pTable->nRootPageNum;
-    void* pRootNode = getPage(pTable->pPager, pTable->nRootPageNum);
-    uint32_t nNumCells = *leafNodeNumCell(pRootNode);
-    pCursor->nCellNum = nNumCells;
+Cursor* tableFind(Table* pTable, uint32_t nKey) {    
+    uint32_t nRootPageNum = pTable->nRootPageNum;
+    void* pRootNode = getPage(pTable->pPager, nRootPageNum);
 
-    pCursor->bEndOfTable = true;
+    if (NODE_LEAF == getNodeType(pRootNode)) {
+        return leafNodeFind(pTable, nRootPageNum, nKey);
+    } 
 
-    return pCursor;
+    printf("Need to implement searching an internal node\n");
+    exit(EXIT_FAILURE);
+
+    return NULL;
 }
 
 void cursorAdvance(Cursor* pCursor) {
@@ -44,4 +45,35 @@ void* cursorValue(Cursor* pCursor) {
     uint32_t nPageNum = pCursor->nPageNum;
     void* pPage = getPage(pCursor->pTable->pPager, nPageNum);
     return leafNodeValue(pPage, pCursor->nCellNum);
+}
+
+Cursor* leafNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey) {
+    void* pNode = getPage(pTable->pPager, nPageNum);
+    uint32_t nNumCells = *leafNodeNumCell(pNode);
+
+    Cursor* pCursor = malloc(sizeof(Cursor));
+    pCursor->pTable = pTable;
+    pCursor->nPageNum = nPageNum;
+
+    //Binary search
+    uint32_t nMinIndex = 0;
+    uint32_t nOnePastMaxIndex = nNumCells;
+    while(nOnePastMaxIndex != nMinIndex) {
+        uint32_t nIndex = (nMinIndex + nOnePastMaxIndex)/2;
+        uint32_t nKeyAtIndex = *leafNodeKey(pNode, nIndex);
+
+        if (nKey == nKeyAtIndex) {
+            pCursor->nCellNum = nIndex;
+            return pCursor;
+        }
+
+        if (nKey < nKeyAtIndex) {
+            nOnePastMaxIndex = nIndex;
+        } else {
+            nMinIndex = nIndex + 1;
+        }
+    }
+
+    pCursor->nCellNum = nMinIndex;
+    return pCursor;
 }

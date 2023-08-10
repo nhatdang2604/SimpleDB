@@ -5,12 +5,24 @@
 
 ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
     void* pNode = getPage(pTable->pPager, pTable->nRootPageNum);
-    if ((*leafNodeNumCell(pNode)) >= LEAF_NODE_MAX_CELLS ) {
+
+    uint32_t nNumCells = (*leafNodeNumCell(pNode));
+
+    if (nNumCells >= LEAF_NODE_MAX_CELLS) {
         return EXECUTE_TABLE_FULL;
     }
 
     Row* pRowToInsert = &(pStatement->rowToInsert);
-    Cursor* pCursor = tableEnd(pTable);
+    uint32_t nKeyToInsert = pRowToInsert->id;
+    Cursor* pCursor = tableFind(pTable, nKeyToInsert);
+
+    if (pCursor->nCellNum < nNumCells) {
+        uint32_t nKeyAtIndex = *leafNodeKey(pNode, pCursor->nCellNum);
+        if (nKeyAtIndex == nKeyToInsert) {
+            return EXECUTE_DUPLICATE_KEY;
+        }
+    }
+
     leafNodeInsert(pCursor, pRowToInsert->id, pRowToInsert);
 
     free(pCursor);

@@ -49,6 +49,7 @@ void* leafNodeValue(void* pNode, uint32_t nCellNum) {
 }
 
 void initializeLeafNode(void* pNode) {
+    setNodeType(pNode, NODE_LEAF);
     *leafNodeNumCell(pNode) = 0;
 }
 
@@ -75,3 +76,13 @@ void leafNodeInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
     *(leafNodeKey(pNode, pCursor->nCellNum)) = key;
     serializeRow(pValue, leafNodeValue(pNode, pCursor->nCellNum));
 }
+
+NodeType getNodeType(void* pNode) {
+    uint8_t nValue = *((uint8_t*)(pNode + NODE_TYPE_OFFSET));
+    return (NodeType)nValue;
+};
+
+void setNodeType(void* pNode, NodeType type) {
+    uint8_t nValue = (uint8_t)type;
+    *((uint8_t*)(pNode + NODE_TYPE_OFFSET)) = nValue;
+};
