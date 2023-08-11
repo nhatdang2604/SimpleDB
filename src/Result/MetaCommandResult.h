@@ -4,6 +4,7 @@
 
 #include "../InputBuffer/InputBuffer.h"
 #include "Table.h"
+#include "Pager.h"
 
 typedef enum {
     META_COMMAND_SUCCESS,
@@ -12,7 +13,9 @@ typedef enum {
 
 MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer, Table* pTable);
 void printConstants();
-void printLeafNode(void* pNode);
+void indent(uint32_t nLevel);
+void printTree(Pager* pPager, uint32_t nPageNum, uint32_t nIndentationLevel);
+
 
 
 #endif

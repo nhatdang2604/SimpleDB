@@ -16,6 +16,7 @@ Table* dbOpen(const char* strFilename) {
         //New database file. Initialize page 0 as leaf node
         void* pRootNode = getPage(pPager, 0);
         initializeLeafNode(pRootNode);
+        setNodeRoot(pRootNode, true);
     }
 
     return pTable;

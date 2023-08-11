@@ -18,4 +18,10 @@ Pager* pagerOpen(const char* strFilename);
 void* getPage(Pager* pPager, uint32_t nPageNum);
 void pagerFlush(Pager* pPager, uint32_t nPageNum);
 
+/**
+ * Until we start recycling free pages, new pages will always
+ * go onto the end of database file
+ **/
+uint32_t getUnusedPageNum(Pager* pPager);
+
 #endif

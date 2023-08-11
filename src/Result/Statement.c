@@ -8,10 +8,6 @@ ExecuteResult executeInsert(Statement* pStatement, Table* pTable) {
 
     uint32_t nNumCells = (*leafNodeNumCell(pNode));
 
-    if (nNumCells >= LEAF_NODE_MAX_CELLS) {
-        return EXECUTE_TABLE_FULL;
-    }
-
     Row* pRowToInsert = &(pStatement->rowToInsert);
     uint32_t nKeyToInsert = pRowToInsert->id;
     Cursor* pCursor = tableFind(pTable, nKeyToInsert);

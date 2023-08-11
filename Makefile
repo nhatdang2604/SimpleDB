@@ -2,7 +2,7 @@ CC=gcc
 OBJDIR=./build
 
 clean: simpleDB
-	rm -rf ./*.o
+	rm -rf ./*.o ./*.db
 
 simpleDB: main.o InputBuffer.o PrepareResult.o MetaCommandResult.o Statement.o ExecuteResult.o Row.o Table.o Pager.o Cursor.o Node.o
 	$(CC) -o ${OBJDIR}/simpleDB main.o InputBuffer.o PrepareResult.o MetaCommandResult.o Statement.o ExecuteResult.o Row.o Table.o Pager.o Cursor.o Node.o
@@ -16,7 +16,7 @@ InputBuffer.o: src/InputBuffer/InputBuffer.c
 PrepareResult.o: src/Result/PrepareResult.c InputBuffer.o Statement.o
 	$(CC) -c src/Result/PrepareResult.c
 
-MetaCommandResult.o: src/Result/MetaCommandResult.c InputBuffer.o Table.o Row.o Node.o
+MetaCommandResult.o: src/Result/MetaCommandResult.c InputBuffer.o Table.o Row.o Node.o Pager.o
 	$(CC) -c src/Result/MetaCommandResult.c
 
 Statement.o: src/Result/Statement.c ExecuteResult.o Table.o Row.o Cursor.o Node.o

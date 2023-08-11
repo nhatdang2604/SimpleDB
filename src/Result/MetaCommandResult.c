@@ -16,7 +16,7 @@ MetaCommandResult doMetaCommand(InputBuffer* pInputBuffer, Table* pTable) {
 
     } else if (0 == strcmp(pInputBuffer->aBuffer, ".btree")) {
         printf("Tree:\n");
-        printLeafNode(getPage(pTable->pPager, 0));
+        printTree(pTable->pPager, 0, 0);
         return META_COMMAND_SUCCESS;
     } else {
         return META_COMMAND_UNREGCONIZED_COMMAND;
@@ -32,11 +32,45 @@ void printConstants() {
     printf("LEAF_NODE_MAX_CELLS: %d\n", LEAF_NODE_MAX_CELLS);
 }
 
-void printLeafNode(void* pNode) {
-    uint32_t nNumCells = *leafNodeNumCell(pNode);
-    printf("leaf (size %d)\n", nNumCells);
-    for (uint32_t i = 0; i < nNumCells; ++i) {
-        uint32_t key = *leafNodeKey(pNode, i);
-        printf("\t- %d : %d\n", i, key);
+void indent(uint32_t nLevel) {
+    for (uint32_t i = 0; i < nLevel; ++i) {
+        printf("  ");
+    }
+};
+void printTree(Pager* pPager, uint32_t nPageNum, uint32_t nIndentationLevel) {
+    void* pNode = getPage(pPager, nPageNum);
+    //uint32_t nNumKeys, nChild;
+
+    switch(getNodeType(pNode)) {
+        case (NODE_LEAF): {
+            uint32_t nNumKeys = *leafNodeNumCell(pNode);
+            indent(nIndentationLevel);
+            printf("- leaf (size %d)\n", nNumKeys);
+            for (uint32_t i = 0 ; i < nNumKeys; ++i) {
+                indent(nIndentationLevel + 1);
+                printf("- %d\n", *leafNodeKey(pNode, i));
+            }
+            break;
+        }
+
+        case (NODE_INTERNAL): {
+            uint32_t nNumKeys = *internalNodeNumKeys(pNode);
+            indent(nIndentationLevel);
+            printf("- internal (size %d)\n", nNumKeys);
+            uint32_t nChild;
+            for (uint32_t i = 0; i < nNumKeys; ++i) {
+                nChild = *internalNodeChild(pNode, i);
+                printTree(pPager, nChild, nIndentationLevel + 1);
+
+                indent(nIndentationLevel + 1);
+                printf("- key %d\n", *internalNodeKey(pNode, i));
+            } 
+            nChild = *internalNodeRightChild(pNode);
+            printTree(pPager, nChild, nIndentationLevel + 1);
+            break;
+        }
+
     }
 }
+
+

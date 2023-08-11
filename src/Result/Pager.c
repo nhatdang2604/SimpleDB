@@ -96,3 +96,6 @@ void pagerFlush(Pager* pPager, uint32_t nPageNum) {
     }
 }
 
+uint32_t getUnusedPageNum(Pager* pPager) {
+    return pPager->nNumPages;
+}
