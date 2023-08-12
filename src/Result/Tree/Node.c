@@ -19,7 +19,9 @@ const uint8_t COMMON_NODE_HEADER_SIZE = NODE_TYPE_SIZE + IS_ROOT_SIZE + PARENT_P
  */
 const uint32_t LEAF_NODE_NUM_CELLS_SIZE = sizeof(uint32_t);
 const uint32_t LEAF_NODE_NUM_CELLS_OFFSET = COMMON_NODE_HEADER_SIZE;
-const uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE;
+const uint32_t LEAF_NODE_NEXT_LEAF_SIZE = sizeof(uint32_t);
+const uint32_t LEAF_NODE_NEXT_LEAF_OFFSET = LEAF_NODE_NUM_CELLS_OFFSET + LEAF_NODE_NUM_CELLS_SIZE;
+const uint32_t LEAF_NODE_HEADER_SIZE = COMMON_NODE_HEADER_SIZE + LEAF_NODE_NUM_CELLS_SIZE + LEAF_NODE_NEXT_LEAF_SIZE;
 
 /*
  * Leaf Node Body Layout
@@ -71,6 +73,7 @@ void initializeLeafNode(void* pNode) {
     setNodeType(pNode, NODE_LEAF);
     setNodeRoot(pNode, false);
     *leafNodeNumCell(pNode) = 0;
+    *leafNodeNextLeaf(pNode) = 0; // 0 is represent no sibling
 }
 
 void leafNodeInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
@@ -108,6 +111,9 @@ void leafNodeSplitAndInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
     uint32_t nNewPageNum = getUnusedPageNum(pCursor->pTable->pPager);
     void* pNewNode = getPage(pCursor->pTable->pPager, nNewPageNum);
     initializeLeafNode(pNewNode);
+    *leafNodeNextLeaf(pNewNode) = *leafNodeNextLeaf(pOldNode);
+    *leafNodeNextLeaf(pOldNode) = nNewPageNum;
+
 
     /**
      * All existing key plus new key should be divided
@@ -125,7 +131,9 @@ void leafNodeSplitAndInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
         void* pDestination = leafNodeCell(pDestinationNode, nIndexWithinNode);
 
         if (i == pCursor->nCellNum) {
-            serializeRow(pValue, pDestination);
+            serializeRow(pValue, leafNodeValue(pDestinationNode, nIndexWithinNode));
+            *leafNodeKey(pDestinationNode, nIndexWithinNode) = key;
+
         } else if (i > pCursor->nCellNum) {
             memcpy(pDestination, leafNodeCell(pOldNode, i - 1), LEAF_NODE_CELL_SIZE);
         } else if (i < pCursor->nCellNum) {
@@ -238,7 +246,7 @@ bool isNodeRoot(void* pNode) {
 };
 
 void setNodeRoot(void* pNode, bool isRoot) {
-    uint8_t nValue = (uint8_t)isRoot;
+    uint8_t nValue = isRoot;
     *((uint8_t*)(pNode + IS_ROOT_OFFSET)) = nValue;
 };
 
@@ -246,4 +254,8 @@ void initializeInternalNode(void* pNode) {
     setNodeType(pNode, NODE_INTERNAL);
     setNodeRoot(pNode, false);
     *(internalNodeNumKeys(pNode)) = 0;
+}
+
+uint32_t* leafNodeNextLeaf(void* pNode) {
+    return pNode + LEAF_NODE_NEXT_LEAF_OFFSET;
 }

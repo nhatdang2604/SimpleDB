@@ -5,13 +5,9 @@
 #include <stdio.h>
 
 Cursor* tableStart(Table* pTable) {
-    Cursor* pCursor = malloc(sizeof(Cursor));
-    pCursor->pTable = pTable;
-    pCursor->nPageNum = pTable->nRootPageNum;
-    pCursor->nCellNum = 0;
-
-    void* pRootNode = getPage(pTable->pPager, pTable->nRootPageNum);
-    uint32_t nNumCells = *leafNodeNumCell(pRootNode);
+    Cursor* pCursor = tableFind(pTable, 0);
+    void* pNode = getPage(pTable->pPager, pCursor->nPageNum);
+    uint32_t nNumCells = *leafNodeNumCell(pNode);
     pCursor->bEndOfTable = (0 == nNumCells);
 
     return pCursor;
@@ -34,7 +30,18 @@ void cursorAdvance(Cursor* pCursor) {
 
     ++pCursor->nCellNum;
     if (pCursor->nCellNum >= (*leafNodeNumCell(pNode))) {
-        pCursor->bEndOfTable = true;
+
+        //Advance to next leaf node
+        uint32_t nNextPageNum = *leafNodeNextLeaf(pNode);
+        if (0 == nNextPageNum) {
+
+            //We reach the right most leaf
+            pCursor->bEndOfTable = true;
+
+        } else {
+            pCursor->nPageNum = nNextPageNum;
+            pCursor->nCellNum = 0;
+        }
     }
 }
 
