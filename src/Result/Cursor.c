@@ -28,7 +28,7 @@ void cursorAdvance(Cursor* pCursor) {
     uint32_t nPageNum = pCursor->nPageNum;
     void* pNode = getPage(pCursor->pTable->pPager, nPageNum);
 
-    ++pCursor->nCellNum;
+    pCursor->nCellNum += 1;
     if (pCursor->nCellNum >= (*leafNodeNumCell(pNode))) {
 
         //Advance to next leaf node

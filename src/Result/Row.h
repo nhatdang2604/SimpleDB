@@ -3,13 +3,12 @@
 
 #include "stdint.h"
 
-#define COLUMN_USERNAME_SIZE 255
+#define COLUMN_USERNAME_SIZE 32
 #define COLUMN_EMAIL_SIZE 255
 #define ID_OFFSET_VALUE 0
 #define USERNAME_OFFSET_VALUE (ID_OFFSET_VALUE + SIZE_OF_ATTRIBUTE(Row, id))
 #define EMAIL_OFFSET_VALUE (USERNAME_OFFSET_VALUE + SIZE_OF_ATTRIBUTE(Row, strEmail))
 #define ROW_SIZE_VALUE (SIZE_OF_ATTRIBUTE(Row, id) + SIZE_OF_ATTRIBUTE(Row, strUsername) + SIZE_OF_ATTRIBUTE(Row, strEmail))
-
 
 typedef struct {
     uint32_t id;

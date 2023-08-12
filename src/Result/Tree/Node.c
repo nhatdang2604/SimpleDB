@@ -95,7 +95,7 @@ void leafNodeInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
         }
     }
 
-    ++(*(leafNodeNumCell(pNode)));
+    (*(leafNodeNumCell(pNode))) += 1;
     *(leafNodeKey(pNode, pCursor->nCellNum)) = key;
     serializeRow(pValue, leafNodeValue(pNode, pCursor->nCellNum));
 }
