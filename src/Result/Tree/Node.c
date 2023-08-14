@@ -95,7 +95,7 @@ void leafNodeInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
         }
     }
 
-    (*(leafNodeNumCell(pNode))) += 1;
+    *(leafNodeNumCell(pNode)) += 1;
     *(leafNodeKey(pNode, pCursor->nCellNum)) = key;
     serializeRow(pValue, leafNodeValue(pNode, pCursor->nCellNum));
 }
@@ -136,25 +136,22 @@ void leafNodeSplitAndInsert(Cursor* pCursor, uint32_t key, Row* pValue) {
 
         } else if (i > pCursor->nCellNum) {
             memcpy(pDestination, leafNodeCell(pOldNode, i - 1), LEAF_NODE_CELL_SIZE);
-        } else if (i < pCursor->nCellNum) {
+        } else {
             memcpy(pDestination, leafNodeCell(pOldNode, i), LEAF_NODE_CELL_SIZE);
         }
-
-        //Update cell count on both leaf nodes
-        *(leafNodeNumCell(pOldNode)) = LEAF_NODE_LEFT_SPLIT_COUNT;
-        *(leafNodeNumCell(pNewNode)) = LEAF_NODE_RIGHT_SPLIT_COUNT;
-
-        //Update the parent node
-        if (isNodeRoot(pOldNode)) {
-            return createNewRoot(pCursor->pTable, nNewPageNum);
-        } else {
-            printf("Need to implement updating parent after splitting\n");
-            exit(EXIT_FAILURE);
-        }
-
     }
 
+    //Update cell count on both leaf nodes
+    *(leafNodeNumCell(pOldNode)) = LEAF_NODE_LEFT_SPLIT_COUNT;
+    *(leafNodeNumCell(pNewNode)) = LEAF_NODE_RIGHT_SPLIT_COUNT;
 
+    //Update the parent node
+    if (isNodeRoot(pOldNode)) {
+        return createNewRoot(pCursor->pTable, nNewPageNum);
+    } else {
+        printf("Need to implement updating parent after splitting\n");
+        exit(EXIT_FAILURE);
+    }
 }
 
 NodeType getNodeType(void* pNode) {

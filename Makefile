@@ -2,10 +2,10 @@ CC=gcc
 OBJDIR=./build
 
 buildData: clean
-	(iter=1 ; while [ $$iter -le 15 ] ; do \
+	(iter=1 ; while [ $$iter -le 14 ] ; do \
 		echo "insert $$iter user$$iter person$$iter@example.com" ; \
 		iter=`expr $$iter + 1` ; \
-	done ; echo "select" ; echo ".exit") | ./build/simpleDB myDB.db
+	done ; echo ".btree" ; echo ".exit") | ./build/simpleDB myDB.db
 
 clean: simpleDB
 	rm -rf ./*.o ./*.db

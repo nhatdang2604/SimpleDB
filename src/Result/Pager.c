@@ -68,7 +68,7 @@ void* getPage(Pager* pPager, uint32_t nPageNum) {
         pPager->aPages[nPageNum] = pPage;
 
         if (nPageNum >= pPager->nNumPages) {
-            pPager->nNumPages += 1;
+            pPager->nNumPages = nPageNum + 1;
         }
     }
 
