@@ -1,6 +1,12 @@
 CC=gcc
 OBJDIR=./build
 
+buildData: clean
+	(iter=1 ; while [ $$iter -le 15 ] ; do \
+		echo "insert $$iter user$$iter person$$iter@example.com" ; \
+		iter=`expr $$iter + 1` ; \
+	done ; echo "select" ; echo ".exit") | ./build/simpleDB myDB.db
+
 clean: simpleDB
 	rm -rf ./*.o ./*.db
 
@@ -39,3 +45,4 @@ Cursor.o: src/Result/Cursor.c Row.o Table.o Node.o
 
 Node.o: src/Result/Tree/Node.c Row.o Pager.o Cursor.o
 	$(CC) -c src/Result/Tree/Node.c
+
