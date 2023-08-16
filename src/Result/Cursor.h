@@ -17,5 +17,6 @@ void cursorAdvance(Cursor* pCursor);
 void* cursorValue(Cursor* pCursor);
 Cursor* leafNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey);
 Cursor* internalNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey);
+uint32_t internalNodeFindChild(void* pNode, uint32_t nKey);
 
 #endif

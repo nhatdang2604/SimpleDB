@@ -82,11 +82,12 @@ Cursor* leafNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey) {
     return pCursor;
 }
 
-Cursor* internalNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey) {
-    void* pNode = getPage(pTable->pPager, nPageNum);
+uint32_t internalNodeFindChild(void* pNode, uint32_t nKey) {
+    //Return the index of the child which should contain
+    // the given key
     uint32_t nNumKeys = *internalNodeNumKeys(pNode);
 
-    //Binary search to find index of child to search
+    //Binary search
     uint32_t nMinIndex = 0;
     uint32_t nMaxIndex = nNumKeys;
 
@@ -101,7 +102,14 @@ Cursor* internalNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey) {
         }
     }
 
-    uint32_t nChildNum = *internalNodeChild(pNode, nMinIndex);
+    return nMinIndex;
+}
+
+Cursor* internalNodeFind(Table* pTable, uint32_t nPageNum, uint32_t nKey) {
+    void* pNode = getPage(pTable->pPager, nPageNum);
+    
+    uint32_t nChildIndex = internalNodeFindChild(pNode, nKey);
+    uint32_t nChildNum = *internalNodeChild(pNode, nChildIndex);
     void* pChild = getPage(pTable->pPager, nChildNum);
     switch(getNodeType(pChild)) {
         case NODE_LEAF: {
