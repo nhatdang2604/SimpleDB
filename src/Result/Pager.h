@@ -4,6 +4,7 @@
 #include "stdint.h"
 #define TABLE_MAX_PAGES 100
 #define PAGE_SIZE_VALUE 4096
+#define INVALID_PAGE_NUM UINT32_MAX
 
 extern const uint32_t PAGE_SIZE;
 

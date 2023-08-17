@@ -77,10 +77,12 @@ uint32_t* internalNodeChild(void* pNode, uint32_t nChildNum);
 uint32_t* internalNodeKey(void* pNode, uint32_t nKeyNum);
 void updateInternalNodeKey(void* pNode, uint32_t nOldKey, uint32_t nNewKey);
 void internalNodeInsert(Table* pTable, uint32_t nParentPageNum, uint32_t nChildPageNum);
+void internalNodeSplitAndInsert(Table* pTable, uint32_t nParentPageNum, uint32_t nChildPageNum);
+
 
 //Universal stuffs
 uint32_t* nodeParent(void* pNode);
-uint32_t getNodeMaxKey(void* pNode);
+uint32_t getNodeMaxKey(Pager* pPager, void* pNode);
 bool isNodeRoot(void* pNode);
 void setNodeRoot(void* pNode, bool isRoot);
 NodeType getNodeType(void* pNode);
